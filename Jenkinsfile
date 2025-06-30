@@ -7,12 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/priscila-albertini-da-silva/stock-me-backend-go.git'
-            }
-        }
-
         stage('Go Test') {
             steps {
                 dir('cmd') {
