@@ -26,10 +26,3 @@ resource "aws_lambda_function" "lambda" {
   source_code_hash = filebase64sha256(var.lambda_zip)
 }
 
-output "lambda_arn" {
-  value = aws_lambda_function.lambda.arn
-}
-
-output "lambda_name" {
-  value = aws_lambda_function.lambda.function_name
-}

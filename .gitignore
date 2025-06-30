@@ -19,6 +19,10 @@ infra/terraform.tfvars
 infra/terraform.tfvars.json
 infra/crash.log
 
+# Arquivos de build Go e Lambda
+/main
+infra/lambda.zip
+
 # Editor/OS files
 .vscode/
 *.swp
