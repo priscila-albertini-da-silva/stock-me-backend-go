@@ -10,7 +10,7 @@ pipeline {
         stage('Go Test') {
             steps {
                 dir('cmd') {
-                    sh 'go test ./... -v'
+                    bat 'go test ./... -v'
                 }
             }
         }
@@ -18,7 +18,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 dir('infra') {
-                    sh 'terraform init'
+                    bat 'terraform init'
                 }
             }
         }
@@ -26,7 +26,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir('infra') {
-                    sh 'terraform plan -out=tfplan'
+                    bat 'terraform plan -out=tfplan'
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
             steps {
                 input message: 'Deseja aplicar as mudanças?'
                 dir('infra') {
-                    sh 'terraform apply -auto-approve tfplan'
+                    bat 'terraform apply -auto-approve tfplan'
                 }
             }
         }
