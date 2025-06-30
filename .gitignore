@@ -1,0 +1,25 @@
+# Go build files
+/bin/
+/cmd/**/bin/
+/*.exe
+*.exe
+*.test
+*.out
+
+# Go modules
+/go.sum
+
+# Terraform files
+infra/.terraform/
+infra/.terraform.lock.hcl
+infra/tfplan
+infra/*.tfstate
+infra/*.tfstate.*
+infra/terraform.tfvars
+infra/terraform.tfvars.json
+infra/crash.log
+
+# Editor/OS files
+.vscode/
+*.swp
+.DS_Store
