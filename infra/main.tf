@@ -8,11 +8,21 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
-data "aws_regions" "available" {}
+module "lambda" {
+  source      = "./modules/lambda"
+  lambda_zip  = var.lambda_zip
+  lambda_name = var.lambda_name
+  handler     = var.lambda_handler
+  runtime     = var.lambda_runtime
+}
 
-output "aws_regions" {
-  value = data.aws_regions.available.names
+module "api-gateway" {
+  source      = "./modules/api-gateway"
+  lambda_arn  = module.lambda.lambda_arn
+  lambda_name = module.lambda.lambda_name
+  api_name    = var.api_gateway_name
+  path_part   = var.path_part
 }
