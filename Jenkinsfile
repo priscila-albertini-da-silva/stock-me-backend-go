@@ -7,6 +7,14 @@ pipeline {
     }
 
     stages {
+        stage('Go Mod Tidy') {
+            steps {
+                dir('cmd') {
+                    bat 'go mod tidy'
+                }
+            }
+        }
+
         stage('Go Test') {
             steps {
                 dir('cmd') {
@@ -20,6 +28,15 @@ pipeline {
                 dir('infra') {
                     bat 'terraform init'
                 }
+            }
+        }
+
+        stage('Build Lambda') {
+            steps {
+                bat 'go env -w GOOS=linux'
+                bat 'go env -w GOARCH=amd64'
+                bat 'go build -o main ./cmd'
+                bat 'powershell Compress-Archive -Path main -DestinationPath infra/lambda.zip -Force'
             }
         }
 
