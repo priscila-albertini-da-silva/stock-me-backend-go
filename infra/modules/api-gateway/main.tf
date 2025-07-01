@@ -43,7 +43,7 @@ resource "aws_api_gateway_integration" "lambda_integration_update_storage_locati
   http_method             = var.update_storage_location_http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = var.lambda_arn
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.lambda_arn}/invocations"
   depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_method_update_storage_location]
 }
 
@@ -62,7 +62,7 @@ resource "aws_api_gateway_integration" "lambda_integration_find_storage_location
   http_method             = var.find_storage_location_http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = var.lambda_arn
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.lambda_arn}/invocations"
   depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_method_find_storage_location]
 }
 
@@ -81,7 +81,7 @@ resource "aws_api_gateway_integration" "lambda_integration_remove_storage_locati
   http_method             = var.remove_storage_location_http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = var.lambda_arn
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.lambda_arn}/invocations"
   depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_method_remove_storage_location]
 }
 
