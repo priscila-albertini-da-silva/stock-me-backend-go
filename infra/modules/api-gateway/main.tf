@@ -6,7 +6,7 @@ resource "aws_api_gateway_rest_api" "api" {
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
-  path_part   = var.path_part
+  path_part   = "{proxy+}"
 }
 
 resource "aws_api_gateway_method" "proxy_methods" {
@@ -33,7 +33,7 @@ resource "aws_lambda_permission" "api_gateway" {
   action        = "lambda:InvokeFunction"
   function_name = var.lambda_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/prod/${var.path_part}"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/prod/*"
 }
 
 resource "aws_api_gateway_deployment" "deployment" {
