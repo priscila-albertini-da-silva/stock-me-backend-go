@@ -55,7 +55,13 @@ pipeline {
             steps {
                 input message: 'Deseja aplicar as mudanças?'
                 dir('infra') {
-                    bat 'terraform apply -auto-approve tfplan'
+                    script {
+                        if (params.ACTION == 'apply') {
+                            bat 'terraform apply -auto-approve tfplan'
+                        } else if (params.ACTION == 'destroy') {
+                            bat 'terraform destroy -auto-approve'
+                        }
+                    }
                 }
             }
         }
