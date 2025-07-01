@@ -33,4 +33,5 @@ module "api_gateway" {
   update_storage_location_http_method = var.update_storage_location_http_method
   find_storage_location_http_method   = var.find_storage_location_http_method
   remove_storage_location_http_method = var.remove_storage_location_http_method
+  account_id                          = data.aws_caller_identity.current.account_id
 }

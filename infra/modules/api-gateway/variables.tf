@@ -8,3 +8,4 @@ variable "create_storage_location_http_method" {}
 variable "update_storage_location_http_method" {}
 variable "find_storage_location_http_method" {}
 variable "remove_storage_location_http_method" {}
+variable "account_id" {}
