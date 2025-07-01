@@ -26,7 +26,10 @@ module "api_gateway" {
   lambda_arn                          = module.lambda.lambda_arn
   lambda_name                         = module.lambda.lambda_name
   api_name                            = var.api_gateway_name
-  path_part                           = var.path_part
+  create_path_part                    = var.create_path_part
+  update_path_part                    = var.update_path_part
+  find_path_part                      = var.find_path_part
+  remove_path_part                    = var.remove_path_part
   aws_region                          = var.aws_region
   stage_name                          = var.stage_name
   create_storage_location_http_method = var.create_storage_location_http_method
