@@ -6,9 +6,15 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/priscila-albertini-da-silva/stock-me-storage-location/internal/controller"
+	"github.com/priscila-albertini-da-silva/stock-me-storage-location/internal/db"
+	"github.com/priscila-albertini-da-silva/stock-me-storage-location/internal/domain"
 )
 
 func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	dsn := "host=localhost user=seu_usuario password=sua_senha dbname=seu_db port=5432 sslmode=disable"
+	db.Connect(dsn)
+	db.DB.AutoMigrate(&domain.StorageLocation{})
+
 	switch req.HTTPMethod {
 	case "GET":
 		return handleGet(req)

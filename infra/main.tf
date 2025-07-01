@@ -35,3 +35,8 @@ module "api_gateway" {
   remove_storage_location_http_method = var.remove_storage_location_http_method
   account_id                          = data.aws_caller_identity.current.account_id
 }
+
+module "aurora" {
+  source = "./modules/aurora"
+  vpc_id = var.vpc_id
+}

@@ -45,3 +45,7 @@ variable "find_storage_location_http_method" {
 variable "remove_storage_location_http_method" {
   default = "DELETE"
 }
+
+variable "vpc_id" {
+  default = "vpc-00b73d9755f551a1e"
+}
