@@ -18,10 +18,10 @@ module "lambda" {
   handler                   = var.lambda_handler
   runtime                   = var.lambda_runtime
   stage_name                = var.stage_name
-  api_gateway_execution_arn = module.api-gateway.api_gateway_execution_arn
+  api_gateway_execution_arn = module.api_gateway.execution_arn
 }
 
-module "api-gateway" {
+module "api_gateway" {
   source                              = "./modules/api-gateway"
   lambda_arn                          = module.lambda.lambda_arn
   lambda_name                         = module.lambda.lambda_name
