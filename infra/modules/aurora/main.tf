@@ -1,26 +1,22 @@
-resource "aws_rds_cluster" "aurora" {
-  cluster_identifier     = "aurora-postgres-cluster"
-  engine                 = "aurora-postgresql"
-  engine_version         = "15.3"
-  master_username        = "priscila"
-  master_password        = "prisecret"
-  skip_final_snapshot    = true
-  vpc_security_group_ids = [aws_security_group.aurora_sg.id]
-  database_name          = "stockme"
+resource "aws_db_instance" "postgres" {
+  identifier              = "rds-postgres-instance"
+  allocated_storage       = 20
+  engine                  = "postgres"
+  engine_version          = "15.3"
+  instance_class          = "db.t3.micro" # ou db.t2.micro (free tier)
+  username                = "priscila"
+  password                = "prisecret"
+  db_name                 = "stockme"
+  vpc_security_group_ids  = [aws_security_group.postgres_sg.id]
+  skip_final_snapshot     = true
+  publicly_accessible     = false # true se quiser acessar fora da VPC
+  storage_type            = "gp2"
+  backup_retention_period = 7
 }
 
-resource "aws_rds_cluster_instance" "aurora_instance" {
-  count              = 1
-  identifier         = "aurora-postgres-instance-${count.index}"
-  cluster_identifier = aws_rds_cluster.aurora.id
-  instance_class     = "db.r6g.large"
-  engine             = aws_rds_cluster.aurora.engine
-  engine_version     = aws_rds_cluster.aurora.engine_version
-}
-
-resource "aws_security_group" "aurora_sg" {
-  name        = "aurora-postgres-sg"
-  description = "Permite acesso ao Aurora PostgreSQL"
+resource "aws_security_group" "postgres_sg" {
+  name        = "postgres-sg"
+  description = "Permite acesso ao PostgreSQL"
   vpc_id      = var.vpc_id
 
   ingress {
