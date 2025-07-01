@@ -12,12 +12,13 @@ provider "aws" {
 }
 
 module "lambda" {
-  source      = "./modules/lambda"
-  lambda_zip  = var.lambda_zip
-  lambda_name = var.lambda_name
-  handler     = var.lambda_handler
-  runtime     = var.lambda_runtime
-  stage_name  = var.stage_name
+  source                    = "./modules/lambda"
+  lambda_zip                = var.lambda_zip
+  lambda_name               = var.lambda_name
+  handler                   = var.lambda_handler
+  runtime                   = var.lambda_runtime
+  stage_name                = var.stage_name
+  api_gateway_execution_arn = module.api-gateway.api_gateway_execution_arn
 }
 
 module "api-gateway" {
