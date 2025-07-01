@@ -9,48 +9,116 @@ resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
   depends_on  = [aws_api_gateway_rest_api.api_gateway, data.aws_iam_policy_document.api_gateway_policy_doc]
 }
 
-resource "aws_api_gateway_method" "api_gateway_methods" {
-  for_each      = toset(local.methods)
+# [create_storage_location] API: METHOD, INTEGRATION
+resource "aws_api_gateway_method" "api_gateway_method_create_storage_location" {
   rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
   resource_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
-  http_method   = each.key
+  http_method   = var.create_storage_location_http_method
   authorization = "NONE"
   depends_on    = [aws_api_gateway_rest_api.api_gateway]
 }
 
-resource "aws_api_gateway_integration" "lambda_integration" {
-  for_each                = toset(local.methods)
+resource "aws_api_gateway_integration" "lambda_integration_create_storage_location" {
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
   resource_id             = aws_api_gateway_rest_api.api_gateway.root_resource_id
-  http_method             = each.key
+  http_method             = var.create_storage_location_http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = var.lambda_arn
-  depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_methods]
+  depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_method_create_storage_location]
 }
 
-resource "aws_api_gateway_deployment" "deployment" {
-  for_each    = toset(local.methods)
-  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+# [update_storage_location] API: METHOD, INTEGRATION
+resource "aws_api_gateway_method" "api_gateway_method_update_storage_location" {
+  rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
+  resource_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
+  http_method   = var.update_storage_location_http_method
+  authorization = "NONE"
+  depends_on    = [aws_api_gateway_rest_api.api_gateway]
+}
 
+resource "aws_api_gateway_integration" "lambda_integration_update_storage_location" {
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  resource_id             = aws_api_gateway_rest_api.api_gateway.root_resource_id
+  http_method             = var.update_storage_location_http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = var.lambda_arn
+  depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_method_update_storage_location]
+}
+
+# [find_storage_location] API: METHOD, INTEGRATION
+resource "aws_api_gateway_method" "api_gateway_method_find_storage_location" {
+  rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
+  resource_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
+  http_method   = var.find_storage_location_http_method
+  authorization = "NONE"
+  depends_on    = [aws_api_gateway_rest_api.api_gateway]
+}
+
+resource "aws_api_gateway_integration" "lambda_integration_find_storage_location" {
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  resource_id             = aws_api_gateway_rest_api.api_gateway.root_resource_id
+  http_method             = var.find_storage_location_http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = var.lambda_arn
+  depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_method_find_storage_location]
+}
+
+# [remove_storage_location] API: METHOD, INTEGRATION
+resource "aws_api_gateway_method" "api_gateway_method_remove_storage_location" {
+  rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
+  resource_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
+  http_method   = var.remove_storage_location_http_method
+  authorization = "NONE"
+  depends_on    = [aws_api_gateway_rest_api.api_gateway]
+}
+
+resource "aws_api_gateway_integration" "lambda_integration_remove_storage_location" {
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  resource_id             = aws_api_gateway_rest_api.api_gateway.root_resource_id
+  http_method             = var.remove_storage_location_http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = var.lambda_arn
+  depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_method_remove_storage_location]
+}
+
+# DEPLOYMENT, STAGE and METHOD SETTINGS
+resource "aws_api_gateway_deployment" "deployment" {
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
   lifecycle {
     create_before_destroy = true
   }
-
   triggers = {
     redeployment = sha1(jsondecode([
+      aws_api_gateway_rest_api.api_gateway.id,
+      aws_api_gateway_integration.lambda_integration_create_storage_location,
+      aws_api_gateway_integration.lambda_integration_update_storage_location,
+      aws_api_gateway_integration.lambda_integration_find_storage_location,
+      aws_api_gateway_integration.lambda_integration_remove_storage_location,
       data.aws_iam_policy_document.api_gateway_policy_doc.json,
       var.stage_name,
-      each.key,
-      var.lambda_arn
+      var.create_storage_location_http_method,
+      var.update_storage_location_http_method,
+      var.find_storage_location_http_method,
+      var.remove_storage_location_http_method,
+      var.path_part,
     ]))
   }
 
   depends_on = [
     aws_api_gateway_rest_api.api_gateway,
     aws_api_gateway_rest_api_policy.api_gateway_policy,
-    aws_api_gateway_method.api_gateway_methods,
-    aws_api_gateway_integration.lambda_integration
+    aws_api_gateway_method.api_gateway_method_create_storage_location,
+    aws_api_gateway_method.api_gateway_method_update_storage_location,
+    aws_api_gateway_method.api_gateway_method_find_storage_location,
+    aws_api_gateway_method.api_gateway_method_remove_storage_location,
+    aws_api_gateway_integration.lambda_integration_create_storage_location,
+    aws_api_gateway_integration.lambda_integration_update_storage_location,
+    aws_api_gateway_integration.lambda_integration_find_storage_location,
+    aws_api_gateway_integration.lambda_integration_remove_storage_location
   ]
 }
 

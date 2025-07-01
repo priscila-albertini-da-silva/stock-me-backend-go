@@ -27,3 +27,23 @@ variable "path_part" {
   description = "value for the path part of the API Gateway resource"
   default     = "storage-location"
 }
+
+variable "stage_name" {
+  default = "prod"
+}
+
+variable "create_storage_location_http_method" {
+  default = "POST"
+}
+
+variable "update_storage_location_http_method" {
+  default = "PUT"
+}
+
+variable "find_storage_location_http_method" {
+  default = "GET"
+}
+
+variable "remove_storage_location_http_method" {
+  default = "DELETE"
+}
