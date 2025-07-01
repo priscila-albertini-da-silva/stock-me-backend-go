@@ -1,0 +1,11 @@
+variable "lambda_arn" {}
+variable "lambda_name" {}
+variable "api_name" {}
+variable "path_part" {}
+variable "aws_region" {}
+variable "stage_name" {}
+variable "create_storage_location_http_method" {}
+variable "update_storage_location_http_method" {}
+variable "find_storage_location_http_method" {}
+variable "remove_storage_location_http_method" {}
+variable "account_id" {}
