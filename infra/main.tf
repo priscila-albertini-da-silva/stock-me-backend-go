@@ -25,4 +25,5 @@ module "api-gateway" {
   lambda_name = module.lambda.lambda_name
   api_name    = var.api_gateway_name
   path_part   = var.path_part
+  aws_region  = var.aws_region
 }
