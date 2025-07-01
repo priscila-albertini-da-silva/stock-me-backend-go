@@ -88,9 +88,9 @@ resource "aws_api_gateway_integration" "lambda_integration_remove_storage_locati
 # DEPLOYMENT, STAGE and METHOD SETTINGS
 resource "aws_api_gateway_deployment" "deployment" {
   rest_api_id = aws_api_gateway_rest_api.api_gateway.id
-  lifecycle {
-    create_before_destroy = true
-  }
+  # lifecycle {
+  #   create_before_destroy = true
+  # }
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_rest_api.api_gateway.id,
