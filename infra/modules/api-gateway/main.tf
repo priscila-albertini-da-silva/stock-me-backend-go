@@ -92,7 +92,7 @@ resource "aws_api_gateway_deployment" "deployment" {
     create_before_destroy = true
   }
   triggers = {
-    redeployment = sha1(jsondecode([
+    redeployment = sha1(jsonencode([
       aws_api_gateway_rest_api.api_gateway.id,
       aws_api_gateway_integration.lambda_integration_create_storage_location,
       aws_api_gateway_integration.lambda_integration_update_storage_location,

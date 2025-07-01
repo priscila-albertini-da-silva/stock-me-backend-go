@@ -23,9 +23,7 @@ variable "api_gateway_name" {
 }
 
 variable "path_part" {
-  type        = string
-  description = "value for the path part of the API Gateway resource"
-  default     = "storage-location"
+  default = "storage-location"
 }
 
 variable "stage_name" {
