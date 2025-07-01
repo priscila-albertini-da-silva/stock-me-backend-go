@@ -3,7 +3,7 @@ resource "aws_rds_cluster" "aurora" {
   engine                 = "aurora-postgresql"
   engine_version         = "15.3"
   master_username        = "priscila"
-  master_password        = "secret"
+  master_password        = "prisecret"
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.aurora_sg.id]
   database_name          = "stockme"
