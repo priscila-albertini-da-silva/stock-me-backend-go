@@ -21,7 +21,10 @@ resource "aws_api_gateway_method" "api_gateway_method_create_storage_location" {
   resource_id   = aws_api_gateway_resource.storage_location.id
   http_method   = var.create_storage_location_http_method
   authorization = "NONE"
-  depends_on    = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_resource.storage_location]
+  depends_on = [
+    aws_api_gateway_rest_api.api_gateway,
+    aws_api_gateway_resource.storage_location
+  ]
 }
 
 resource "aws_api_gateway_integration" "lambda_integration_create_storage_location" {
@@ -34,7 +37,7 @@ resource "aws_api_gateway_integration" "lambda_integration_create_storage_locati
   depends_on = [
     aws_api_gateway_rest_api.api_gateway,
     aws_api_gateway_method.api_gateway_method_create_storage_location,
-    aws_api_gateway_resource.api_gateway_resource_create_storage_location
+    aws_api_gateway_resource.storage_location
   ]
 }
 
@@ -44,12 +47,15 @@ resource "aws_api_gateway_method" "api_gateway_method_update_storage_location" {
   resource_id   = aws_api_gateway_resource.storage_location.id
   http_method   = var.update_storage_location_http_method
   authorization = "NONE"
-  depends_on    = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_resource.storage_location]
+  depends_on = [
+    aws_api_gateway_rest_api.api_gateway,
+    aws_api_gateway_resource.storage_location
+  ]
 }
 
 resource "aws_api_gateway_integration" "lambda_integration_update_storage_location" {
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
-  resource_id             = aws_api_gateway_resource.api_gateway_resource_update_storage_location.id
+  resource_id             = aws_api_gateway_resource.storage_location.id
   http_method             = var.update_storage_location_http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
@@ -57,7 +63,7 @@ resource "aws_api_gateway_integration" "lambda_integration_update_storage_locati
   depends_on = [
     aws_api_gateway_rest_api.api_gateway,
     aws_api_gateway_method.api_gateway_method_update_storage_location,
-    aws_api_gateway_resource.api_gateway_resource_update_storage_location
+    aws_api_gateway_resource.storage_location
   ]
 }
 
@@ -101,7 +107,7 @@ resource "aws_api_gateway_method" "api_gateway_method_remove_storage_location" {
 
 resource "aws_api_gateway_integration" "lambda_integration_remove_storage_location" {
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
-  resource_id             = aws_api_gateway_resource.api_gateway_resource_remove_storage_location.id
+  resource_id             = aws_api_gateway_resource.storage_location.id
   http_method             = var.remove_storage_location_http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
@@ -109,7 +115,7 @@ resource "aws_api_gateway_integration" "lambda_integration_remove_storage_locati
   depends_on = [
     aws_api_gateway_rest_api.api_gateway,
     aws_api_gateway_method.api_gateway_method_remove_storage_location,
-    aws_api_gateway_resource.api_gateway_resource_remove_storage_location
+    aws_api_gateway_resource.storage_location
   ]
 }
 
