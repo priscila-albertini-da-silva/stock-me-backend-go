@@ -2,7 +2,7 @@ resource "aws_rds_cluster" "aurora" {
   cluster_identifier     = "aurora-postgres-cluster"
   engine                 = "aurora-postgresql"
   engine_version         = "15.3"
-  master_username        = "admin"
+  master_username        = "priscila"
   master_password        = "secret"
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.aurora_sg.id]
