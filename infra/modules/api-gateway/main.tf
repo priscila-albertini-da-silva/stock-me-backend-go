@@ -9,10 +9,6 @@ resource "aws_api_gateway_resource" "proxy" {
   path_part   = var.path_part
 }
 
-locals {
-  methods = ["GET", "POST", "PUT", "DELETE"]
-}
-
 resource "aws_api_gateway_method" "proxy_methods" {
   for_each      = toset(local.methods)
   rest_api_id   = aws_api_gateway_rest_api.api.id
@@ -37,7 +33,7 @@ resource "aws_lambda_permission" "api_gateway" {
   action        = "lambda:InvokeFunction"
   function_name = var.lambda_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/${each.key}/*"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/prod/${var.path_part}${each.key == "ANY" ? "*" : ""}"
 }
 
 resource "aws_api_gateway_deployment" "deployment" {
