@@ -33,7 +33,7 @@ resource "aws_lambda_permission" "api_gateway" {
   action        = "lambda:InvokeFunction"
   function_name = var.lambda_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/prod/${var.path_part}*"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/prod/${var.path_part}"
 }
 
 resource "aws_api_gateway_deployment" "deployment" {
