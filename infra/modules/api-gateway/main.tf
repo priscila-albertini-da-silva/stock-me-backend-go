@@ -24,7 +24,7 @@ resource "aws_api_gateway_integration" "lambda_integration_create_storage_locati
   http_method             = var.create_storage_location_http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = var.lambda_arn
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.lambda_arn}/invocations"
   depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_method_create_storage_location]
 }
 
