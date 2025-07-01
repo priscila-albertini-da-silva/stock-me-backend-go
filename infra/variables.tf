@@ -22,20 +22,8 @@ variable "api_gateway_name" {
   default = "stock-me-storage-location-api"
 }
 
-variable "create_path_part" {
-  default = "create_storage-location"
-}
-
-variable "update_path_part" {
-  default = "update_storage-location"
-}
-
-variable "find_path_part" {
-  default = "find_storage-location"
-}
-
-variable "remove_path_part" {
-  default = "remove_storage-location"
+variable "path_part" {
+  default = "storage-location"
 }
 
 variable "stage_name" {
