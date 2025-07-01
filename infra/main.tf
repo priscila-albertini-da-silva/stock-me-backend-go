@@ -17,6 +17,7 @@ module "lambda" {
   lambda_name = var.lambda_name
   handler     = var.lambda_handler
   runtime     = var.lambda_runtime
+  stage_name  = var.stage_name
 }
 
 module "api-gateway" {
