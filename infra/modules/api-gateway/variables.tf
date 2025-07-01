@@ -3,3 +3,6 @@ variable "lambda_name" {}
 variable "api_name" {}
 variable "path_part" {}
 variable "aws_region" {}
+variable "stage_name" {
+  default = "prod"
+}

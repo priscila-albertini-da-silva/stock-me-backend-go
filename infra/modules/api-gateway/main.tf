@@ -1,55 +1,77 @@
-resource "aws_api_gateway_rest_api" "api" {
+resource "aws_api_gateway_rest_api" "api_gateway" {
   name        = var.api_name
   description = "API Gateway for StockMe"
 }
 
-resource "aws_api_gateway_resource" "proxy" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
-  path_part   = "{proxy+}"
+resource "aws_api_gateway_rest_api_policy" "api_gateway_policy" {
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+  policy      = data.aws_iam_policy_document.api_gateway_policy_doc.json
+  depends_on  = [aws_api_gateway_rest_api.api_gateway, data.aws_iam_policy_document.api_gateway_policy_doc]
 }
 
-resource "aws_api_gateway_method" "proxy_methods" {
+resource "aws_api_gateway_method" "api_gateway_methods" {
   for_each      = toset(local.methods)
-  rest_api_id   = aws_api_gateway_rest_api.api.id
-  resource_id   = aws_api_gateway_resource.proxy.id
+  rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
+  resource_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
   http_method   = each.key
   authorization = "NONE"
+  depends_on    = [aws_api_gateway_rest_api.api_gateway]
 }
 
 resource "aws_api_gateway_integration" "lambda_integration" {
   for_each                = toset(local.methods)
-  rest_api_id             = aws_api_gateway_rest_api.api.id
-  resource_id             = aws_api_gateway_resource.proxy.id
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  resource_id             = aws_api_gateway_rest_api.api_gateway.root_resource_id
   http_method             = each.key
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.lambda_arn}/invocations"
-}
-
-resource "aws_lambda_permission" "api_gateway" {
-  for_each      = toset(local.methods)
-  statement_id  = "AllowAPIGatewayInvoke${each.key}"
-  action        = "lambda:InvokeFunction"
-  function_name = var.lambda_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/prod/*"
+  uri                     = var.lambda_arn
+  depends_on              = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_method.api_gateway_methods]
 }
 
 resource "aws_api_gateway_deployment" "deployment" {
+  for_each    = toset(local.methods)
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  triggers = {
+    redeployment = sha1(jsondecode([
+      data.aws_iam_policy_document.api_gateway_policy_doc.json,
+      var.stage_name,
+      each.key,
+      var.lambda_arn
+    ]))
+  }
+
   depends_on = [
-    aws_api_gateway_integration.lambda_integration,
-    aws_api_gateway_method.proxy_methods
+    aws_api_gateway_rest_api.api_gateway,
+    aws_api_gateway_rest_api_policy.api_gateway_policy,
+    aws_api_gateway_method.api_gateway_methods,
+    aws_api_gateway_integration.lambda_integration
   ]
-  rest_api_id = aws_api_gateway_rest_api.api.id
 }
 
-resource "aws_api_gateway_stage" "prod" {
+resource "aws_api_gateway_stage" "api_gateway_stage" {
+  stage_name    = var.stage_name
+  rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
   deployment_id = aws_api_gateway_deployment.deployment.id
-  rest_api_id   = aws_api_gateway_rest_api.api.id
-  stage_name    = "prod"
+
+  depends_on = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_deployment.deployment]
 }
 
-output "api_invoke_url" {
-  value = aws_api_gateway_stage.prod.invoke_url
+resource "aws_api_gateway_method_settings" "api_gateway_method_settings" {
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+  stage_name  = aws_api_gateway_stage.api_gateway_stage.stage_name
+  method_path = "/*"
+  settings {
+    metrics_enabled    = true
+    logging_level      = "INFO"
+    data_trace_enabled = true
+  }
+
+  depends_on = [aws_api_gateway_rest_api.api_gateway, aws_api_gateway_stage.api_gateway_stage]
 }
+
