@@ -26,3 +26,7 @@ resource "aws_lambda_function" "lambda" {
   source_code_hash = filebase64sha256(var.lambda_zip)
 }
 
+resource "aws_cloudwatch_log_group" "lambda" {
+  name              = "/aws/lambda/${var.lambda_name}"
+  retention_in_days = 14
+}
