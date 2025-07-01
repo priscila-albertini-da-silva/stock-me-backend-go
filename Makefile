@@ -18,8 +18,8 @@ init :
 	cd infra && terraform init	
 
 lambda.zip:
-	GOOS=linux GOARCH=amd64 go build -o main ./cmd
-	powershell Compress-Archive -Path main -DestinationPath infra/lambda.zip -Force
+	GOOS=linux GOARCH=amd64 go build -o bootstrap ./cmd
+	powershell Compress-Archive -Path bootstrap -DestinationPath infra/lambda.zip -Force
 
 plan: lambda.zip
 	cd infra && terraform plan

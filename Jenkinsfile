@@ -38,8 +38,8 @@ pipeline {
             steps {
                 bat 'go env -w GOOS=linux'
                 bat 'go env -w GOARCH=amd64'
-                bat 'go build -o main ./cmd'
-                bat 'powershell Compress-Archive -Path main -DestinationPath infra/lambda.zip -Force'
+                bat 'go build -o bootstrap ./cmd'
+                bat 'powershell Compress-Archive -Path bootstrap -DestinationPath infra/lambda.zip -Force'
             }
         }
 

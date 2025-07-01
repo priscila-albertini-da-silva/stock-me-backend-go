@@ -11,11 +11,11 @@ variable "lambda_name" {
 }
 
 variable "lambda_handler" {
-  default = "main"
+  default = "bootstrap"
 }
 
 variable "lambda_runtime" {
-  default = "go1.x"
+  default = "provided.al2"
 }
 
 variable "api_gateway_name" {
