@@ -206,8 +206,6 @@ resource "aws_api_gateway_method_settings" "api_gateway_method_settings" {
 }
 
 resource "aws_iam_role" "apigateway_cloudwatch" {
-  name = "apigateway-cloudwatch-logs-role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
